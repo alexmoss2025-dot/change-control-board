@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Control Board — Moss Energy</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --navy: #003366;
+            --navy-dark: #002244;
+            --teal: #00838f;
+            --teal-light: #4fb3bf;
+            --teal-bg: #e0f7fa;
+            --gray-50: #f8f9fa;
+            --gray-100: #f1f3f5;
+            --gray-200: #e9ecef;
+            --gray-500: #868e96;
+            --gray-700: #495057;
+            --gray-900: #212529;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,.12);
+            --radius: 10px;
+            --transition: .25s cubic-bezier(.4,0,.2,1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Header ── */
+        header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+            color: var(--white);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,.25);
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .logo-mark {
+            width: 52px; height: 52px;
+            background: var(--teal);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,131,143,.4);
+        }
+        .header-text h1 {
+            font-size: 1.55rem;
+            font-weight: 700;
+            letter-spacing: .3px;
+        }
+        .header-text p {
+            font-size: .85rem;
+            opacity: .8;
+            margin-top: 2px;
+        }
+        .header-badge {
+            margin-left: auto;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: .78rem;
+            letter-spacing: .5px;
+            white-space: nowrap;
+        }
+
+        /* ── Hero / Intro ── */
+        .hero {
+            background: linear-gradient(160deg, var(--navy) 0%, var(--teal) 100%);
+            color: var(--white);
+            padding: 52px 24px 56px;
+            text-align: center;
+        }
+        .hero h2 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .hero p {
+            max-width: 720px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+            opacity: .9;
+            line-height: 1.7;
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+        .hero-stat {
+            text-align: center;
+        }
+        .hero-stat .num {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+        }
+        .hero-stat .label {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: .75;
+        }
+
+        /* ── Main Content ── */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 24px 64px;
+            flex: 1;
+            width: 100%;
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-heading h3 {
+            font-size: 1.45rem;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+        .section-heading p {
+            color: var(--gray-500);
+            font-size: .95rem;
+        }
+
+        /* ── Card Grid ── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            padding: 28px 26px 24px;
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--navy), var(--teal));
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--teal-light);
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-icon {
+            width: 54px; height: 54px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            margin-bottom: 18px;
+            flex-shrink: 0;
+        }
+        .card-icon.workflow   { background: #e3f2fd; }
+        .card-icon.swimlane   { background: #e8f5e9; }
+        .card-icon.pir        { background: #fff3e0; }
+        .card-icon.dashboard  { background: #f3e5f5; }
+        .card-icon.form       { background: var(--teal-bg); }
+
+        .card h4 {
+            font-size: 1.1rem;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+        .card .desc {
+            color: var(--gray-700);
+            font-size: .9rem;
+            flex: 1;
+            margin-bottom: 20px;
+        }
+        .card-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .tag {
+            font-size: .7rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            letter-spacing: .3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--navy);
+            color: var(--white);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: .88rem;
+            font-weight: 600;
+            transition: background var(--transition), transform var(--transition);
+            align-self: flex-start;
+        }
+        .card-link:hover {
+            background: var(--teal);
+            transform: translateX(3px);
+        }
+        .card-link svg {
+            width: 16px; height: 16px;
+            transition: transform var(--transition);
+        }
+        .card-link:hover svg { transform: translateX(3px); }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--navy-dark);
+            color: rgba(255,255,255,.7);
+            text-align: center;
+            padding: 28px 24px;
+            font-size: .82rem;
+            line-height: 1.8;
+        }
+        footer strong { color: var(--white); }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .header-inner { flex-wrap: wrap; }
+            .header-badge { margin-left: 0; margin-top: 8px; width: 100%; text-align: center; }
+            .hero h2 { font-size: 1.5rem; }
+            .hero-stats { gap: 24px; }
+            .card-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .header-text h1 { font-size: 1.2rem; }
+            .hero { padding: 36px 16px 40px; }
+            main { padding: 32px 16px 48px; }
+        }
+    
+/* ══════ CCB Global Navigation Sidebar ══════ */
+#ccb-nav-toggle {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10001;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  background: #003366;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 12px rgba(0,51,102,.35);
+  transition: background .2s, transform .2s;
+  line-height: 1;
+}
+#ccb-nav-toggle:hover { background: #004080; transform: scale(1.08); }
+#ccb-nav-toggle.open { background: #c62828; }
+
+#ccb-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s, visibility .3s;
+}
+#ccb-nav-overlay.open { opacity: 1; visibility: visible; }
+
+#ccb-nav-sidebar {
+  position: fixed;
+  top: 0;
+  left: -320px;
+  width: 300px;
+  height: 100vh;
+  background: #fff;
+  z-index: 10000;
+  box-shadow: 4px 0 24px rgba(0,0,0,.15);
+  transition: left .3s cubic-bezier(.4,0,.2,1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+#ccb-nav-sidebar.open { left: 0; }
+
+.ccb-nav-brand {
+  background: linear-gradient(135deg, #003366 0%, #004d99 100%);
+  color: #fff;
+  padding: 28px 24px 20px;
+  flex-shrink: 0;
+}
+.ccb-nav-brand h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  letter-spacing: .3px;
+}
+.ccb-nav-brand p {
+  font-size: 12px;
+  opacity: .8;
+  margin: 0;
+  font-weight: 400;
+}
+
+.ccb-nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 12px 0;
+  flex: 1;
+}
+.ccb-nav-links li { margin: 0; padding: 0; }
+.ccb-nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 24px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all .2s;
+}
+.ccb-nav-links a:hover {
+  background: #f0f4f8;
+  color: #003366;
+  border-left-color: #004d99;
+}
+.ccb-nav-links a.active {
+  background: #e6f0fa;
+  color: #003366;
+  font-weight: 700;
+  border-left-color: #003366;
+}
+.ccb-nav-links .nav-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.ccb-nav-links .nav-label {
+  line-height: 1.3;
+}
+
+.ccb-nav-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e9ecef;
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  #ccb-nav-sidebar { width: 260px; left: -280px; }
+  #ccb-nav-toggle { top: 8px; left: 8px; width: 38px; height: 38px; font-size: 18px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════ CCB Global Navigation ══════ -->
+<button id="ccb-nav-toggle" aria-label="Open navigation menu" onclick="document.getElementById('ccb-nav-sidebar').classList.toggle('open');document.getElementById('ccb-nav-overlay').classList.toggle('open');this.classList.toggle('open');this.innerHTML=this.classList.contains('open')?'✕':'☰';">☰</button>
+<div id="ccb-nav-overlay" onclick="document.getElementById('ccb-nav-sidebar').classList.remove('open');document.getElementById('ccb-nav-overlay').classList.remove('open');document.getElementById('ccb-nav-toggle').classList.remove('open');document.getElementById('ccb-nav-toggle').innerHTML='☰';"></div>
+<nav id="ccb-nav-sidebar" role="navigation" aria-label="Site navigation">
+<div class="ccb-nav-brand">
+  <h3>Moss Energy</h3>
+  <p>Change Control Board Portal</p>
+</div>
+<ul class="ccb-nav-links">
+  <li><a href="index.html" class="active"><span class="nav-icon">🏠</span><span class="nav-label">CCB Home</span></a></li>
+  <li><a href="01_Change_Request_Form_V3.html"><span class="nav-icon">📝</span><span class="nav-label">Change Request Form</span></a></li>
+  <li><a href="07_Change_Request_Register.html"><span class="nav-icon">📋</span><span class="nav-label">Change Request Register</span></a></li>
+  <li><a href="12_PIR_Template.html"><span class="nav-icon">🔍</span><span class="nav-label">Post-Implementation Review</span></a></li>
+  <li><a href="CCB_Deliverables_15_Change_Request_Workflow_Flowchart.html"><span class="nav-icon">📊</span><span class="nav-label">Workflow Flowchart</span></a></li>
+  <li><a href="17_Section_Responsibility_Swimlane_Flowchart.html"><span class="nav-icon">🏊</span><span class="nav-label">Swimlane Flowchart</span></a></li>
+</ul>
+<div class="ccb-nav-footer">CCB Deliverables &bull; v2.1 &bull; 2026</div>
+</nav>
+<!-- ══════ End CCB Navigation ══════ -->
+
+
+<!-- Header -->
+<header>
+    <div class="header-inner">
+        <div class="logo-mark">⚡</div>
+        <div class="header-text">
+            <h1>Change Control Board</h1>
+            <p>Moss Energy — Workflow Documentation Hub</p>
+        </div>
+        <span class="header-badge">v2.1 &bull; CCB Portal</span>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+    <h2>CCB Document Center</h2>
+    <p>
+        Welcome to the Moss Energy Change Control Board portal. Access all workflow documentation,
+        templates, and dashboards from a single location. This hub supports Version&nbsp;2.1 of our
+        streamlined 7-phase change management process.
+    </p>
+    <div class="hero-stats">
+        <div class="hero-stat"><span class="num">7</span><span class="label">Phases</span></div>
+        <div class="hero-stat"><span class="num">7</span><span class="label">Quality Gates</span></div>
+        <div class="hero-stat"><span class="num">34</span><span class="label">Notifications</span></div>
+        <div class="hero-stat"><span class="num">5</span><span class="label">Documents</span></div>
+    </div>
+</section>
+
+<!-- Main -->
+<main>
+    <div class="section-heading">
+        <h3>Documents &amp; Tools</h3>
+        <p>Select a document below to view interactive content, templates, or analytics.</p>
+    </div>
+
+    <div class="card-grid">
+
+        <!-- 1 ── Change Request Form -->
+        <div class="card">
+            <div class="card-icon form">📝</div>
+            <h4>Change Request Form</h4>
+            <div class="card-tags">
+                <span class="tag">Form</span>
+                <span class="tag">Interactive</span>
+                <span class="tag">v3</span>
+            </div>
+            <p class="desc">
+                Submit and manage change requests with the latest V3 form. Includes dynamic risk
+                calculation, category selection (Standard, Normal, Major, Emergency), and
+                multi-section approval workflow.
+            </p>
+            <a href="01_Change_Request_Form_V3.html" class="card-link">
+                Open Form
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- 2 ── Metrics Dashboard -->
+        <div class="card">
+            <div class="card-icon dashboard">📊</div>
+            <h4>CCB Metrics Dashboard</h4>
+            <div class="card-tags">
+                <span class="tag">Analytics</span>
+                <span class="tag">Charts</span>
+                <span class="tag">KPIs</span>
+            </div>
+            <p class="desc">
+                Executive overview of change management performance. Monitor KPIs such as success
+                rate, time-to-approval, and volume trends with interactive Chart.js visualizations
+                and filterable data views.
+            </p>
+            <a href="08_CCB_Metrics_Dashboard.html" class="card-link">
+                View Dashboard
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- 3 ── Post-Implementation Review -->
+        <div class="card">
+            <div class="card-icon pir">📋</div>
+            <h4>Post-Implementation Review</h4>
+            <div class="card-tags">
+                <span class="tag">Template</span>
+                <span class="tag">Review</span>
+            </div>
+            <p class="desc">
+                Structured template for conducting Post-Implementation Reviews (PIR). Evaluate
+                change outcomes, capture lessons learned, and document improvement actions to
+                strengthen the change management process.
+            </p>
+            <a href="12_PIR_Template.html" class="card-link">
+                Open Template
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- 4 ── Workflow Flowchart -->
+        <div class="card">
+            <div class="card-icon workflow">🔄</div>
+            <h4>Change Request Workflow Flowchart</h4>
+            <div class="card-tags">
+                <span class="tag">Flowchart</span>
+                <span class="tag">Interactive</span>
+                <span class="tag">7 Phases</span>
+            </div>
+            <p class="desc">
+                Interactive visualization of the end-to-end change request workflow. Covers all
+                7 phases, quality gates, and 34 email notifications with click-to-expand detail
+                modals for each process step.
+            </p>
+            <a href="15_Change_Request_Workflow_Flowchart.html" class="card-link">
+                View Flowchart
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- 5 ── Swimlane Diagram -->
+        <div class="card">
+            <div class="card-icon swimlane">🏊</div>
+            <h4>Section Responsibility Swimlane</h4>
+            <div class="card-tags">
+                <span class="tag">Swimlane</span>
+                <span class="tag">Roles</span>
+                <span class="tag">RACI</span>
+            </div>
+            <p class="desc">
+                Role-based swimlane diagram mapping each workflow phase to responsible parties.
+                Clearly illustrates handoffs, parallel activities, and gate ownership across all
+                7 swimlane roles in the v2.1 process.
+            </p>
+            <a href="17_Section_Responsibility_Swimlane_Flowchart.html" class="card-link">
+                View Swimlane
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+        </div>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <strong>Moss Energy</strong> — Change Control Board Documentation Portal<br>
+    Version 2.1 &bull; Effective Date: March 2026 &bull; Classification: Internal Use<br>
+    &copy; 2026 Moss Energy. All rights reserved.
+</footer>
+
+</body>
+</html>
