@@ -351,10 +351,202 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 480px) {
-  #ccb-nav-sidebar { width: 260px; left: -280px; }
-  #ccb-nav-toggle { top: 8px; left: 8px; width: 38px; height: 38px; font-size: 18px; }
+
+/* Mobile spacer to prevent nav overlap */
+@media (max-width: 768px) {
+  .ccb-mobile-spacer { height: 56px !important; display: block; }
 }
+@media (min-width: 769px) {
+  .ccb-mobile-spacer { display: none; }
+}
+
+/* ══════ Enhanced Mobile Responsiveness ══════ */
+
+/* -- Global mobile fixes -- */
+@media (max-width: 768px) {
+  html { -webkit-text-size-adjust: 100%; }
+  body { overflow-x: hidden; }
+
+  /* Ensure hamburger menu doesn't overlap content */
+  body > .container,
+  body > .wrapper,
+  body > main,
+  body > div:not(#ccb-nav-overlay):not(#ccb-nav-sidebar) {
+    padding-top: 60px !important;
+  }
+
+  /* Make all tables horizontally scrollable */
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; max-width: 100%; }
+  table thead, table tbody, table tr { display: table; width: 100%; table-layout: auto; }
+  
+  /* Improve touch targets - minimum 44px */
+  button, input[type="button"], input[type="submit"], input[type="reset"],
+  .btn, a.btn, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+    min-height: 44px;
+  }
+
+  /* Prevent horizontal overflow */
+  img, svg, video, canvas {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  pre, code {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+/* -- Small phone screens -- */
+@media (max-width: 480px) {
+  /* Nav toggle improvements for small screens */
+  #ccb-nav-toggle {
+    top: 6px;
+    left: 6px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 8px;
+  }
+  
+  #ccb-nav-sidebar {
+    width: 85vw;
+    max-width: 300px;
+    left: -90vw;
+  }
+  #ccb-nav-sidebar.open { left: 0; }
+  
+  .ccb-nav-links a {
+    padding: 14px 20px;
+    font-size: 15px;
+    min-height: 48px;
+  }
+  .ccb-nav-links .nav-icon {
+    font-size: 20px;
+  }
+  .ccb-nav-brand {
+    padding: 24px 20px 16px;
+  }
+}
+
+/* -- Change Request Form specific -- */
+@media (max-width: 768px) {
+  .container { margin: 0 !important; border-radius: 0 !important; }
+  .content { padding: 15px !important; }
+  .header { flex-direction: column; text-align: center; padding: 20px 15px !important; }
+  .header h1 { font-size: 16pt !important; }
+  .form-row { flex-direction: column; }
+  .form-group, .form-group.half, .form-group.third {
+    flex: 100% !important;
+    min-width: 100% !important;
+  }
+  .signature-row { flex-direction: column; gap: 10px; }
+  .footer { flex-direction: column; gap: 8px; text-align: center; padding: 15px !important; }
+  .checkbox-group { flex-direction: column; gap: 10px; }
+  .checkbox-item { padding: 8px 0; }
+  .category-box { padding: 14px; }
+}
+
+/* -- Change Request Register specific -- */
+@media (max-width: 768px) {
+  .register-table-wrapper,
+  .table-container,
+  .table-responsive,
+  div:has(> table) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -15px;
+    padding: 0 15px;
+  }
+  .controls-row { flex-direction: column; gap: 10px; }
+  .search-box, .filter-group { width: 100% !important; }
+  .action-buttons { 
+    width: 100%; 
+    justify-content: center; 
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .action-buttons button, .action-buttons .btn {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+/* -- PIR Template specific -- */
+@media (max-width: 768px) {
+  .pir-section, .review-section { padding: 15px !important; }
+  .pir-header, .review-header { flex-direction: column; text-align: center; }
+  .score-grid, .rating-grid { 
+    grid-template-columns: 1fr !important; 
+  }
+  .metric-card { padding: 12px !important; }
+}
+
+/* -- Flowchart pages specific -- */
+@media (max-width: 768px) {
+  .flowchart-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 8px !important;
+  }
+  .wf-stage { margin-bottom: 16px; }
+  .wf-stage-header { flex-direction: column; text-align: center; padding: 12px !important; }
+  .wf-stage-body { padding: 12px !important; }
+  .wf-gate-grid, .wf-activities { 
+    grid-template-columns: 1fr !important; 
+  }
+  
+  /* Swimlane: allow horizontal scroll on the wide chart */
+  .flowchart { min-width: 900px; }
+  
+  /* Modal improvements for mobile */
+  .modal, .modal-content {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 10px auto !important;
+    border-radius: 10px !important;
+  }
+  .modal-overlay .modal,
+  div[class*="modal"] {
+    max-height: 90vh !important;
+  }
+}
+
+/* -- Index/Home page specific -- */
+@media (max-width: 768px) {
+  .hero { padding: 32px 16px !important; }
+  .hero h2 { font-size: 1.3rem !important; }
+  .hero-stats { 
+    flex-direction: column; 
+    gap: 16px; 
+    align-items: center; 
+  }
+  .hero-stat { min-width: auto; }
+  .card-grid { 
+    grid-template-columns: 1fr !important; 
+    gap: 16px !important;
+    padding: 0 4px;
+  }
+  .card { padding: 20px 16px !important; }
+  .card h4 { font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .hero h2 { font-size: 1.1rem !important; }
+  .hero p { font-size: 0.85rem !important; }
+  .section-heading h3 { font-size: 1.15rem !important; }
+  header .header-inner { flex-direction: column; text-align: center; padding: 16px !important; }
+  header .header-text h1 { font-size: 1.1rem !important; }
+}
+
+/* ══════ End Enhanced Mobile Responsiveness ══════ */
 
 </style>
 </head>
@@ -379,6 +571,8 @@
 <div class="ccb-nav-footer">CCB Deliverables &bull; v2.1 &bull; 2026</div>
 </nav>
 <!-- ══════ End CCB Navigation ══════ -->
+<div class="ccb-mobile-spacer" style="height:0px"></div>
+
 
     <div class="container">
         <!-- Header -->
