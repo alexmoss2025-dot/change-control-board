@@ -18,12 +18,42 @@
             line-height: 1.6;
             color: #333;
             background-color: #f5f5f5;
-            padding: 20px;
+            padding: 0;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: linear-gradient(135deg, #003366 0%, #004d99 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .top-bar-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-bar .logo-section h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: white;
+            border: none;
+        }
+        .top-bar .logo-section p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .top-bar .header-info {
+            text-align: right;
+            font-size: 13px;
         }
         
         .container {
             max-width: 1000px;
-            margin: 0 auto;
+            margin: 20px auto;
             background-color: white;
             padding: 40px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -444,6 +474,10 @@
   .content { padding: 15px !important; }
   .header { flex-direction: column; text-align: center; padding: 20px 15px !important; }
   .header h1 { font-size: 16pt !important; }
+  .top-bar { padding: 15px 20px !important; }
+  .top-bar-content { flex-direction: column; text-align: center; gap: 10px; }
+  .top-bar .header-info { text-align: center; }
+  .top-bar .logo-section h1 { font-size: 18px !important; }
   .form-row { flex-direction: column; }
   .form-group, .form-group.half, .form-group.third {
     flex: 100% !important;
@@ -577,6 +611,19 @@
 <!-- ══════ End CCB Navigation ══════ -->
 <div class="ccb-mobile-spacer" style="height:0px"></div>
 
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <div class="top-bar-content">
+            <div class="logo-section">
+                <h1>⚡ Moss Energy</h1>
+                <p>Change Control Board - Post-Implementation Review</p>
+            </div>
+            <div class="header-info">
+                <div>Version 1.0 | March 2026</div>
+                <div>CCB Document: 12</div>
+            </div>
+        </div>
+    </header>
 
     <div class="container">
         <!-- Header -->
