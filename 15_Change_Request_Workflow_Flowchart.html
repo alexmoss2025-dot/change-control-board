@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moss Energy — CCB Change Request Workflow Flowchart v2.1</title>
+<style>
+  :root {
+    --primary: #003366;
+    --primary-light: #004080;
+    --accent: #e8f0fe;
+    --success: #2e7d32;
+    --warning: #f57f17;
+    --danger: #c62828;
+    --info: #0277bd;
+    --review-color: #00838f;
+    --border: #cfd8dc;
+    --bg: #f5f7fa;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: #222; }
+
+  /* ── Header ── */
+  header { background: var(--primary); color: #fff; padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 1.5rem; font-weight: 700; }
+  header .subtitle { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+  .help-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 8px 16px; border-radius: var(--radius); cursor: pointer; font-size: 0.85rem; }
+  .help-btn:hover { background: rgba(255,255,255,0.25); }
+
+  /* ── Layout ── */
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+  /* ── Summary Bar ── */
+  .summary-bar { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  .summary-stat { background: #fff; border-radius: var(--radius); padding: 16px 20px; flex: 1; min-width: 160px; box-shadow: var(--card-shadow); border-left: 4px solid var(--primary); }
+  .summary-stat .label { font-size: 0.75rem; text-transform: uppercase; color: #666; letter-spacing: 0.5px; }
+  .summary-stat .value { font-size: 1.4rem; font-weight: 700; color: var(--primary); margin-top: 4px; }
+
+  /* ── Stage Sections ── */
+  .wf-stage { background: #fff; border-radius: var(--radius); box-shadow: var(--card-shadow); margin-bottom: 20px; overflow: hidden; }
+  .wf-stage-header { padding: 16px 20px; color: #fff; display: flex; align-items: center; gap: 12px; }
+  .wf-stage-header .stage-num { background: rgba(255,255,255,0.25); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem; flex-shrink: 0; }
+  .wf-stage-header h2 { font-size: 1.05rem; font-weight: 600; }
+  .wf-stage-header .stage-meta { margin-left: auto; font-size: 0.8rem; opacity: 0.85; text-align: right; }
+
+  .stage-1 .wf-stage-header { background: var(--primary); }
+  .stage-2 .wf-stage-header { background: #1565c0; }
+  .stage-review .wf-stage-header { background: var(--review-color); }
+  .stage-3 .wf-stage-header { background: #6a1b9a; }
+  .stage-4 .wf-stage-header { background: #e65100; }
+  .stage-5 .wf-stage-header { background: var(--success); }
+  .stage-6 .wf-stage-header { background: #37474f; }
+  .stage-7 .wf-stage-header { background: #4527a0; }
+  .stage-8 .wf-stage-header { background: #1b5e20; }
+
+  .wf-stage-body { padding: 16px 20px; }
+  .wf-stage-body p.desc { font-size: 0.9rem; color: #555; margin-bottom: 12px; }
+
+  /* ── Cards Grid ── */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .wf-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: all 0.2s; position: relative; }
+  .wf-card:hover { border-color: var(--primary); box-shadow: 0 2px 12px rgba(0,51,102,0.15); transform: translateY(-2px); }
+  .wf-card .card-icon { font-size: 1.3rem; margin-bottom: 6px; }
+  .wf-card .card-title { font-size: 0.85rem; font-weight: 600; color: var(--primary); }
+  .wf-card .card-sub { font-size: 0.75rem; color: #888; margin-top: 4px; }
+  .wf-card .card-badge { position: absolute; top: 8px; right: 8px; font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .badge-email { background: #e3f2fd; color: #1565c0; }
+  .badge-gate { background: #fce4ec; color: #c62828; }
+  .badge-section { background: #e8f5e9; color: #2e7d32; }
+  .badge-review { background: #e0f7fa; color: #00838f; }
+  .badge-new { background: #fff3e0; color: #e65100; }
+
+  /* ── Connector Arrows ── */
+  .connector { text-align: center; padding: 8px 0; }
+  .connector .arrow { display: inline-block; color: var(--primary); font-size: 1.4rem; }
+  .connector .gate-label { display: inline-block; background: var(--danger); color: #fff; padding: 3px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 8px; }
+  .connector .review-label { display: inline-block; background: var(--review-color); color: #fff; padding: 3px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 8px; }
+
+  /* ── Reference Table ── */
+  .ref-section { margin-top: 32px; }
+  .ref-section h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 12px; border-bottom: 2px solid var(--primary); padding-bottom: 6px; }
+  table.ref-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table.ref-table th { background: var(--primary); color: #fff; padding: 10px 12px; text-align: left; }
+  table.ref-table td { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; }
+  table.ref-table tr:nth-child(even) { background: #f9fafb; }
+  table.ref-table tr:hover { background: #e8f0fe; }
+  .role-chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; font-weight: 600; }
+  .role-owner { background: #e3f2fd; color: #1565c0; }
+  .role-tech { background: #e8f5e9; color: #2e7d32; }
+  .role-review { background: #e0f7fa; color: #00838f; }
+  .role-approval { background: #f3e5f5; color: #6a1b9a; }
+  .role-system { background: #fafafa; color: #616161; }
+
+  /* ── Modal ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: #fff; border-radius: 12px; max-width: 640px; width: 95%; max-height: 85vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .modal-header { background: var(--primary); color: #fff; padding: 16px 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
+  .modal-header h3 { font-size: 1rem; }
+  .modal-close { background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; }
+  .modal-body { padding: 20px; font-size: 0.88rem; line-height: 1.6; }
+  .modal-body .email-meta { background: #f5f7fa; border-radius: var(--radius); padding: 12px; margin-bottom: 12px; }
+  .modal-body .email-meta div { margin-bottom: 4px; }
+  .modal-body .email-meta strong { color: var(--primary); }
+
+  /* ── Footer ── */
+  footer { text-align: center; padding: 20px; font-size: 0.75rem; color: #999; border-top: 1px solid #e0e0e0; margin-top: 32px; }
+
+  /* ── Print ── */
+  @media print {
+    header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .wf-stage-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .help-btn { display: none; }
+    .wf-card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<!-- Moss Docs Nav -->
+<!-- Moss Docs Nav -->
+<div id="moss-site-nav" style="background:#003366;padding:0 24px;display:flex;align-items:center;height:44px;font-family:Segoe UI,system-ui,sans-serif;position:sticky;top:0;z-index:9999;box-shadow:0 2px 6px rgba(0,0,0,0.15);">
+  <a href="../index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#fff;margin-right:28px;">
+    <div style="width:28px;height:28px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#003366;font-size:11px;">M</div>
+    <span style="font-size:13px;font-weight:700;letter-spacing:0.4px;">MOSS ENERGY</span>
+  </a>
+  <nav style="display:flex;gap:2px;">
+    <a href="../index.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">← Home</a>
+    <a href="01_Change_Request_Form_V3.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Form</a>
+    <a href="07_Change_Request_Register.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Register</a>
+    <a href="08_CCB_Metrics_Dashboard.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Dashboard</a>
+    <a href="12_PIR_Template.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">PIR Template</a>
+    <a href="15_Change_Request_Workflow_Flowchart.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Workflow</a>
+    <a href="17_Section_Responsibility_Swimlane_Flowchart.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Swimlane</a>
+    <a href="CCB_Stakeholder_Responsibility_Mapping.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Stakeholder Map</a>
+  </nav>
+</div>
+<!-- End Moss Docs Nav -->
+
+
+<header>
+  <div>
+    <h1>⚡ Moss Energy — Change Request Workflow Flowchart</h1>
+    <div class="subtitle">Document 15 · Version 2.0 · Effective March 25, 2026 · 10 Stages · 8 Gates · 43 Email Notifications</div>
+  </div>
+  <button class="help-btn" onclick="showHelp()">❓ Help &amp; Legend</button>
+</header>
+
+<div class="container">
+
+  <!-- Summary Bar -->
+  <div class="summary-bar">
+    <div class="summary-stat"><div class="label">Workflow Stages</div><div class="value">8</div></div>
+    <div class="summary-stat"><div class="label">Quality Gates</div><div class="value">7</div></div>
+    <div class="summary-stat"><div class="label">Email Notifications</div><div class="value">37</div></div>
+    <div class="summary-stat"><div class="label">CR Sections</div><div class="value">9</div></div>
+    <div class="summary-stat" style="border-left-color:var(--review-color)"><div class="label">Changed in v2.1</div><div class="value">Approvals during CCB</div></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- STAGE 1: Initial Submission -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="wf-stage stage-1">
+    <div class="wf-stage-header">
+      <div class="stage-num">1</div>
+      <h2>Stage 1 — Initial Submission</h2>
+      <div class="stage-meta">Owner: Change Owner · Sections 1-2 · SLA: Day 0</div>
+    </div>
+    <div class="wf-stage-body">
+      <p class="desc">The Change Owner initiates the CR by completing identification and categorization sections.</p>
+      <div class="cards">
+        <div class="wf-card" onclick="showEmail('submission_confirm')">
+          <span class="card-badge badge-section">Sec 1</span>
+          <div class="card-icon">📋</div>
+          <div class="card-title">Change Identification</div>
+          <div class="card-sub">CR title, description, justification, requestor</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('submission_confirm')">
+          <span class="card-badge badge-section">Sec 2</span>
+          <div class="card-icon">🏷️</div>
+          <div class="card-title">Change Category</div>
+          <div class="card-sub">Type, priority, impact classification</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('submission_confirm')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">📧</div>
+          <div class="card-title">E-01: Submission Confirmation</div>
+          <div class="card-sub">Sent to Change Owner + CCB Facilitator</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('tech_lead_assign')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">📧</div>
+          <div class="card-title">E-02: Technical Lead Assignment</div>
+          <div class="card-sub">Notification to assigned Technical Lead</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">⬇</span><span class="gate-label">Gate G1 — Submission Validation</span></div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- STAGE 2: Technical Details (Sections 3-7) -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="wf-stage stage-2">
+    <div class="wf-stage-header">
+      <div class="stage-num">2</div>
+      <h2>Stage 2 — Technical Detail Completion</h2>
+      <div class="stage-meta">Owner: Technical Lead · Sections 3-7 · SLA: Days 1-5</div>
+    </div>
+    <div class="wf-stage-body">
+      <p class="desc">The Technical Lead completes all technical and quality sections (3-7), including QA testing evidence. This consolidates technical work before review.</p>
+      <div class="cards">
+        <div class="wf-card" onclick="showEmail('sec3_complete')">
+          <span class="card-badge badge-section">Sec 3</span>
+          <div class="card-icon">⚙️</div>
+          <div class="card-title">Technical Specifications</div>
+          <div class="card-sub">Architecture, components, dependencies</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('sec4_complete')">
+          <span class="card-badge badge-section">Sec 4</span>
+          <div class="card-icon">⚠️</div>
+          <div class="card-title">Risk Assessment Summary</div>
+          <div class="card-sub">Risk matrix, mitigations, residual risk</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('sec5_complete')">
+          <span class="card-badge badge-section">Sec 5</span>
+          <div class="card-icon">📅</div>
+          <div class="card-title">Implementation Schedule</div>
+          <div class="card-sub">Timeline, milestones, resource allocation</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('sec6_complete')">
+          <span class="card-badge badge-section">Sec 6</span>
+          <div class="card-icon">🔄</div>
+          <div class="card-title">Rollback &amp; Recovery Plan</div>
+          <div class="card-sub">Rollback triggers, procedures, RTO/RPO</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('sec7_complete')">
+          <span class="card-badge badge-section">Sec 7</span>
+          <div class="card-icon">✅</div>
+          <div class="card-title">QA Approval &amp; Testing Evidence</div>
+          <div class="card-sub">Test results, QA sign-off, evidence artifacts</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('tech_progress')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">📧</div>
+          <div class="card-title">E-03–E-07: Section Completion Alerts</div>
+          <div class="card-sub">Progress notifications per section</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('tech_sla_reminder')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">⏰</div>
+          <div class="card-title">E-08: SLA Reminder (Day 3)</div>
+          <div class="card-sub">Reminder if sections incomplete by Day 3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">⬇</span><span class="gate-label">Gate G2 — Technical Completeness</span></div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- STAGE ★: Completeness Review (NEW) -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="wf-stage stage-review">
+    <div class="wf-stage-header">
+      <div class="stage-num">★</div>
+      <h2>Stage 3 — Completeness Review &amp; CCB Scheduling</h2>
+      <div class="stage-meta">Owners: Product Owner + CCB Lead · Reviews Sec 1-7 · SLA: Days 5-7</div>
+    </div>
+    <div class="wf-stage-body">
+      <p class="desc">Product Owner and CCB Lead jointly review all completed sections (1-7) for accuracy, completeness, and readiness. Upon approval, the CR is deemed eligible for CCB meeting scheduling where formal approvals will be collected.</p>
+      <div class="cards">
+        <div class="wf-card" onclick="showEmail('completeness_start')">
+          <span class="card-badge badge-review">NEW</span>
+          <div class="card-icon">🔍</div>
+          <div class="card-title">Completeness Review Initiated</div>
+          <div class="card-sub">PO + CCB Lead begin joint review of Sec 1-7</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('completeness_checklist')">
+          <span class="card-badge badge-review">NEW</span>
+          <div class="card-icon">📝</div>
+          <div class="card-title">Review Checklist Validation</div>
+          <div class="card-sub">18-point checklist across all sections</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('completeness_rework')">
+          <span class="card-badge badge-review">NEW</span>
+          <div class="card-icon">🔁</div>
+          <div class="card-title">Rework Loop (if needed)</div>
+          <div class="card-sub">Return to Tech Lead with specific feedback</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('completeness_pass')">
+          <span class="card-badge badge-review">NEW</span>
+          <div class="card-icon">✅</div>
+          <div class="card-title">Completeness Approved</div>
+          <div class="card-sub">CR cleared for approval workflow</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('completeness_email')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">📧</div>
+          <div class="card-title">E-09–E-12: Review Notifications</div>
+          <div class="card-sub">Start, feedback, rework, approval emails</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">⬇</span><span class="review-label">Gate G2.5 — Completeness Verified → CCB Scheduling</span></div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- STAGE 6: CCB Decision -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="wf-stage stage-5">
+    <div class="wf-stage-header">
+      <div class="stage-num">4</div>
+      <h2>Stage 4 — CCB Meeting &amp; Decision (Approvals During Meeting)</h2>
+      <div class="stage-meta">Owners: CCB Voting Members + Approval Groups · SLA: Day 10</div>
+    </div>
+    <div class="wf-stage-body">
+      <p class="desc">All required approvals are collected during the CCB meeting. Approval groups review and sign off during the session. CCB voting members then deliberate and vote. Outcomes: Approved, Approved with Conditions, Deferred, or Rejected.</p>
+      <div class="cards">
+        <div class="wf-card" onclick="showEmail('ccb_schedule')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">📅</div>
+          <div class="card-title">E-13: Meeting Scheduled</div>
+          <div class="card-sub">Calendar invite + CR package to all members</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('ccb_reminder')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">⏰</div>
+          <div class="card-title">E-14: Meeting Reminder (24h)</div>
+          <div class="card-sub">Reminder with pre-read materials</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('ccb_approvals_collected')">
+          <span class="card-badge badge-gate">Approvals</span>
+          <div class="card-icon">📋</div>
+          <div class="card-title">In-Meeting Approvals</div>
+          <div class="card-sub">All approval groups sign off during CCB</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('ccb_approved')">
+          <span class="card-badge badge-gate">Decision</span>
+          <div class="card-icon">✅</div>
+          <div class="card-title">Approved</div>
+          <div class="card-sub">Proceed to implementation</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('ccb_conditional')">
+          <span class="card-badge badge-gate">Decision</span>
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Approved with Conditions</div>
+          <div class="card-sub">Conditions must be met before implementation</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('ccb_deferred')">
+          <span class="card-badge badge-gate">Decision</span>
+          <div class="card-icon">⏸️</div>
+          <div class="card-title">Deferred</div>
+          <div class="card-sub">Additional info required, re-present next cycle</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('ccb_rejected')">
+          <span class="card-badge badge-gate">Decision</span>
+          <div class="card-icon">❌</div>
+          <div class="card-title">Rejected</div>
+          <div class="card-sub">CR does not proceed; may resubmit</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('ccb_decision_email')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">📧</div>
+          <div class="card-title">E-15–E-19: Decision Notifications</div>
+          <div class="card-sub">Outcome emails to all stakeholders</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">⬇</span><span class="gate-label">Gate G3 — Board Approval + All Approvals Recorded</span></div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- STAGE 7: Implementation -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="wf-stage stage-6">
+    <div class="wf-stage-header">
+      <div class="stage-num">5</div>
+      <h2>Stage 5 — Implementation Execution</h2>
+      <div class="stage-meta">Owner: Technical Lead + Change Owner · SLA: Per Schedule</div>
+    </div>
+    <div class="wf-stage-body">
+      <p class="desc">Approved change is implemented per the schedule in Section 5. Rollback plan (Section 6) is on standby. No section filling occurs at this stage.</p>
+      <div class="cards">
+        <div class="wf-card" onclick="showEmail('impl_start')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">🚀</div>
+          <div class="card-title">E-20: Implementation Started</div>
+          <div class="card-sub">Notification to all stakeholders</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('impl_progress')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">📊</div>
+          <div class="card-title">E-21–E-23: Progress Updates</div>
+          <div class="card-sub">Milestone completion notifications</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('impl_complete')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">🏁</div>
+          <div class="card-title">E-24: Implementation Complete</div>
+          <div class="card-sub">All changes deployed successfully</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">⬇</span><span class="gate-label">Gate G4 — Implementation Verified</span></div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- STAGE 8: Post-Implementation Review -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="wf-stage stage-7">
+    <div class="wf-stage-header">
+      <div class="stage-num">6</div>
+      <h2>Stage 6 — Post-Implementation Review</h2>
+      <div class="stage-meta">Owner: Change Owner · Section 8 · SLA: +14 Days Post-Impl</div>
+    </div>
+    <div class="wf-stage-body">
+      <p class="desc">Change Owner completes the PIR plan (Section 8), documenting outcomes, lessons learned, and success metrics.</p>
+      <div class="cards">
+        <div class="wf-card" onclick="showEmail('pir_reminder')">
+          <span class="card-badge badge-section">Sec 8</span>
+          <div class="card-icon">📋</div>
+          <div class="card-title">PIR Plan Completion</div>
+          <div class="card-sub">Outcomes, lessons learned, metrics</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('pir_email')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">📧</div>
+          <div class="card-title">E-25–E-28: PIR Notifications</div>
+          <div class="card-sub">Reminder, submission, review, acceptance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">⬇</span><span class="gate-label">Gate G5 — PIR Accepted</span></div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- STAGE 9: Final Closure -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="wf-stage stage-8">
+    <div class="wf-stage-header">
+      <div class="stage-num">7</div>
+      <h2>Stage 7 — Final Closure</h2>
+      <div class="stage-meta">Owner: System/Automated · Section 9 · SLA: +1 Day Post-PIR</div>
+    </div>
+    <div class="wf-stage-body">
+      <p class="desc">System finalizes Section 9 (Approvals &amp; Signatures), archives the CR, and distributes the final closure package.</p>
+      <div class="cards">
+        <div class="wf-card" onclick="showEmail('closure_final')">
+          <span class="card-badge badge-section">Sec 9</span>
+          <div class="card-icon">🔒</div>
+          <div class="card-title">Approvals &amp; Signatures Finalized</div>
+          <div class="card-sub">All signatures collected, record sealed</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('closure_email')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">📧</div>
+          <div class="card-title">E-29–E-31: Closure Notifications</div>
+          <div class="card-sub">Archive, final summary, stakeholder notice</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">⬇</span><span class="gate-label">Gate G6 — CR Archived &amp; Closed</span></div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- STAGE 10: Escalation (Parallel) -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="wf-stage" style="border-left: 4px solid var(--warning);">
+    <div class="wf-stage-header" style="background: var(--warning);">
+      <div class="stage-num">⚡</div>
+      <h2>Stage 8 — Escalation &amp; Exception Handling (Parallel)</h2>
+      <div class="stage-meta">Triggered at any gate · SLA breaches · Overrides</div>
+    </div>
+    <div class="wf-stage-body">
+      <p class="desc">Escalation paths triggered by SLA breaches, approval deadlocks, or emergency changes. Runs parallel to main workflow.</p>
+      <div class="cards">
+        <div class="wf-card" onclick="showEmail('escalation_sla')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">⏰</div>
+          <div class="card-title">E-32: SLA Breach Escalation</div>
+          <div class="card-sub">Auto-escalation after SLA exceeded</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('escalation_deadlock')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">🔀</div>
+          <div class="card-title">E-33: Meeting Quorum Issue</div>
+          <div class="card-sub">Quorum/attendance issue escalated to CCB Chair</div>
+        </div>
+        <div class="wf-card" onclick="showEmail('escalation_emergency')">
+          <span class="card-badge badge-email">Email</span>
+          <div class="card-icon">🚨</div>
+          <div class="card-title">E-34: Emergency Change Override</div>
+          <div class="card-sub">Fast-track approval with post-facto review</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- REFERENCE TABLES -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="ref-section">
+    <h3>📋 Section Responsibility Matrix</h3>
+    <table class="ref-table">
+      <thead>
+        <tr><th>Section</th><th>Title</th><th>Responsible Role</th><th>Phase</th><th>Stage</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Change Identification</td><td><span class="role-chip role-owner">Change Owner</span></td><td>Initial Submission</td><td>1</td></tr>
+        <tr><td>2</td><td>Change Category</td><td><span class="role-chip role-owner">Change Owner</span></td><td>Initial Submission</td><td>1</td></tr>
+        <tr><td>3</td><td>Technical Specifications</td><td><span class="role-chip role-tech">Technical Lead</span></td><td>Technical Details</td><td>2</td></tr>
+        <tr><td>4</td><td>Risk Assessment Summary</td><td><span class="role-chip role-tech">Technical Lead</span></td><td>Technical Details</td><td>2</td></tr>
+        <tr><td>5</td><td>Implementation Schedule</td><td><span class="role-chip role-tech">Technical Lead</span></td><td>Technical Details</td><td>2</td></tr>
+        <tr><td>6</td><td>Rollback &amp; Recovery Plan</td><td><span class="role-chip role-tech">Technical Lead</span></td><td>Technical Details</td><td>2</td></tr>
+        <tr><td>7</td><td>QA Approval &amp; Testing Evidence</td><td><span class="role-chip role-tech">Technical Lead</span></td><td>Technical Details</td><td>2</td></tr>
+        <tr><td>—</td><td>Completeness Review</td><td><span class="role-chip role-review">Product Owner + CCB Lead</span></td><td>Completeness Review</td><td>3</td></tr>
+        <tr><td>8</td><td>PIR Plan</td><td><span class="role-chip role-owner">Change Owner</span></td><td>Post-Implementation</td><td>6</td></tr>
+        <tr><td>9</td><td>Approvals &amp; Signatures</td><td><span class="role-chip role-system">System/Automated</span></td><td>CCB Meeting → Closure</td><td>4–7</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ref-section">
+    <h3>🔄 Key Changes in Version 2.1</h3>
+    <table class="ref-table">
+      <thead>
+        <tr><th>Change</th><th>Previous (v2.0)</th><th>Current (v2.1)</th><th>Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Pre-CCB Approvals</td><td>Separate Stage 4 (Approval Collection)</td><td>Removed — approvals during CCB meeting</td><td>Streamlined workflow, faster cycle time</td></tr>
+        <tr><td>Completeness Review</td><td>Quality gate before approvals</td><td>Determines CCB meeting eligibility</td><td>Direct path to CCB after completeness</td></tr>
+        <tr><td>CCB Meeting</td><td>Vote only (approvals pre-collected)</td><td>Approvals + Vote in single session</td><td>All decisions in one meeting</td></tr>
+        <tr><td>Workflow Stages</td><td>10 stages</td><td>8 stages</td><td>Removed approval collection + scheduling</td></tr>
+        <tr><td>Email Notifications</td><td>43 notifications</td><td>34 notifications</td><td>Removed pre-CCB approval emails</td></tr>
+        <tr><td>Quality Gates</td><td>8 gates</td><td>7 gates (removed G3 approval gate)</td><td>Simplified gate structure</td></tr>
+        <tr><td>Cycle Time (Normal)</td><td>15-20 business days</td><td>10-15 business days</td><td>~5 days faster</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /container -->
+
+<footer>Moss Energy — Change Control Board Process | Confidential | Document Version 2.1 | Effective March 25, 2026</footer>
+
+<!-- ═══════════ MODALS ═══════════ -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Email Template</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="helpModal">
+  <div class="modal">
+    <div class="modal-header" style="background:var(--review-color)">
+      <h3>Help &amp; Legend — Workflow Flowchart v2.1</h3>
+      <button class="modal-close" onclick="closeHelp()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <h4 style="margin-bottom:8px;">🔖 Card Badge Legend</h4>
+      <p><span class="card-badge badge-section" style="position:static">Sec N</span> — Section being filled at this stage</p>
+      <p><span class="card-badge badge-email" style="position:static">Email</span> — Email notification sent</p>
+      <p><span class="card-badge badge-gate" style="position:static">Approval/Decision</span> — Approval action or decision point</p>
+      <p><span class="card-badge badge-review" style="position:static">v2.1</span> — Updated in version 2.1</p>
+      <br>
+      <h4 style="margin-bottom:8px;">🆕 What Changed in v2.1</h4>
+      <ul style="margin-left:18px; line-height:1.8">
+        <li><strong>Pre-CCB Approvals removed</strong> — no separate approval collection stage</li>
+        <li><strong>Approvals during CCB meeting</strong> — all approval groups sign off during the meeting</li>
+        <li><strong>Completeness Review → CCB scheduling</strong> — passing review triggers CCB scheduling directly</li>
+        <li><strong>8 stages</strong> (down from 10), <strong>34 email notifications</strong>, <strong>7 gates</strong></li>
+      </ul>
+      <br>
+      <h4 style="margin-bottom:8px;">💡 How to Use</h4>
+      <p>Click any card to see the associated email template or detail. Gate labels between stages show quality checkpoints.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const emailTemplates = {
+  submission_confirm: {
+    title: "E-01: Submission Confirmation",
+    to: "Change Owner, CCB Facilitator",
+    subject: "CR-{ID} Submitted — Change Request Received",
+    body: "Your change request <strong>CR-{ID}: {Title}</strong> has been successfully submitted.<br><br><strong>Sections Completed:</strong> 1 (Change Identification), 2 (Change Category)<br><strong>Next Step:</strong> Technical Lead assignment for Sections 3-7<br><strong>SLA:</strong> Technical Lead will be assigned within 4 business hours."
+  },
+  tech_lead_assign: {
+    title: "E-02: Technical Lead Assignment",
+    to: "Technical Lead, Change Owner",
+    subject: "CR-{ID} — You Have Been Assigned as Technical Lead",
+    body: "You have been assigned as Technical Lead for <strong>CR-{ID}: {Title}</strong>.<br><br><strong>Your Responsibility:</strong> Complete Sections 3-7 (Technical Specifications, Risk Assessment, Implementation Schedule, Rollback & Recovery Plan, QA Approval & Testing Evidence)<br><strong>SLA:</strong> 5 business days from assignment<br><strong>Deadline:</strong> {Date+5}"
+  },
+  sec3_complete: {
+    title: "E-03: Section 3 — Technical Specifications Complete",
+    to: "Change Owner, CCB Facilitator",
+    subject: "CR-{ID} — Section 3 (Technical Specifications) Completed",
+    body: "Technical Lead has completed <strong>Section 3: Technical Specifications</strong> for CR-{ID}.<br><br><strong>Progress:</strong> 1 of 5 technical sections complete (Sec 3 ✅ | Sec 4-7 ⏳)<br><strong>Details:</strong> Architecture diagrams, component specifications, and dependencies documented."
+  },
+  sec4_complete: {
+    title: "E-04: Section 4 — Risk Assessment Complete",
+    to: "Change Owner, CCB Facilitator",
+    subject: "CR-{ID} — Section 4 (Risk Assessment) Completed",
+    body: "Technical Lead has completed <strong>Section 4: Risk Assessment Summary</strong> for CR-{ID}.<br><br><strong>Progress:</strong> 2 of 5 technical sections complete (Sec 3-4 ✅ | Sec 5-7 ⏳)<br><strong>Details:</strong> Risk matrix, mitigation strategies, and residual risk levels documented."
+  },
+  sec5_complete: {
+    title: "E-05: Section 5 — Implementation Schedule Complete",
+    to: "Change Owner, CCB Facilitator",
+    subject: "CR-{ID} — Section 5 (Implementation Schedule) Completed",
+    body: "Technical Lead has completed <strong>Section 5: Implementation Schedule</strong> for CR-{ID}.<br><br><strong>Progress:</strong> 3 of 5 technical sections complete (Sec 3-5 ✅ | Sec 6-7 ⏳)<br><strong>Details:</strong> Timeline, milestones, resource allocation, and dependencies documented."
+  },
+  sec6_complete: {
+    title: "E-06: Section 6 — Rollback & Recovery Plan Complete",
+    to: "Change Owner, CCB Facilitator",
+    subject: "CR-{ID} — Section 6 (Rollback & Recovery) Completed",
+    body: "Technical Lead has completed <strong>Section 6: Rollback & Recovery Plan</strong> for CR-{ID}.<br><br><strong>Progress:</strong> 4 of 5 technical sections complete (Sec 3-6 ✅ | Sec 7 ⏳)<br><strong>Details:</strong> Rollback triggers, procedures, RTO/RPO targets, and recovery steps documented."
+  },
+  sec7_complete: {
+    title: "E-07: Section 7 — QA Approval & Testing Evidence Complete",
+    to: "Change Owner, CCB Facilitator, QA Manager",
+    subject: "CR-{ID} — Section 7 (QA & Testing Evidence) Completed",
+    body: "Technical Lead has completed <strong>Section 7: QA Approval & Testing Evidence</strong> for CR-{ID}.<br><br><strong>Progress:</strong> 5 of 5 technical sections complete (Sec 3-7 ✅)<br><strong>Details:</strong> Test results, QA sign-off, evidence artifacts, and test coverage reports attached.<br><strong>Next Step:</strong> Completeness Review by Product Owner and CCB Lead."
+  },
+  tech_progress: {
+    title: "E-03 to E-07: Section Completion Alerts",
+    to: "Change Owner, CCB Facilitator",
+    subject: "CR-{ID} — Technical Section Progress Update",
+    body: "A progress notification is sent each time the Technical Lead completes a section (3 through 7).<br><br><strong>Template:</strong> Each email includes section name, completion status, remaining sections, and next steps.<br><strong>Frequency:</strong> One email per section completion (5 emails total for Sec 3-7)."
+  },
+  tech_sla_reminder: {
+    title: "E-08: SLA Reminder — Technical Sections",
+    to: "Technical Lead, CCB Facilitator",
+    subject: "⏰ CR-{ID} — SLA Reminder: Technical Sections Due in 2 Days",
+    body: "<strong>Reminder:</strong> Sections 3-7 for CR-{ID} are due within 2 business days.<br><br><strong>Current Status:</strong> {X} of 5 sections complete<br><strong>Remaining:</strong> {List of incomplete sections}<br><strong>SLA Deadline:</strong> {Date}<br><br>Please prioritize completion to avoid escalation."
+  },
+  completeness_start: {
+    title: "E-09: Completeness Review Initiated (NEW)",
+    to: "Product Owner, CCB Lead, Change Owner, Technical Lead",
+    subject: "CR-{ID} — Completeness Review Started",
+    body: "<strong>🔍 Completeness Review Initiated</strong><br><br>CR-{ID} has entered the Completeness Review stage. Product Owner and CCB Lead will jointly review Sections 1-7 for accuracy, completeness, and readiness.<br><br><strong>Review Scope:</strong> All 7 sections (Change ID, Category, Tech Specs, Risk, Schedule, Rollback, QA)<br><strong>SLA:</strong> 2 business days<br><strong>Reviewers:</strong> Product Owner + CCB Lead"
+  },
+  completeness_checklist: {
+    title: "Completeness Review — 18-Point Checklist",
+    to: "Product Owner, CCB Lead",
+    subject: "CR-{ID} — Review Checklist",
+    body: "<strong>Checklist Categories:</strong><br>• Sections 1-2: Identification complete, category correct, priority justified (4 items)<br>• Section 3: Tech specs complete, diagrams attached (2 items)<br>• Section 4: Risk matrix populated, mitigations identified (2 items)<br>• Section 5: Schedule realistic, resources confirmed (2 items)<br>• Section 6: Rollback plan tested, RTO/RPO defined (3 items)<br>• Section 7: Test evidence attached, QA signed off (3 items)<br>• Cross-section: Consistency check, no conflicts (2 items)"
+  },
+  completeness_rework: {
+    title: "E-10: Completeness Review — Rework Required (NEW)",
+    to: "Technical Lead, Change Owner",
+    subject: "🔁 CR-{ID} — Rework Required: Completeness Review Feedback",
+    body: "<strong>Rework Required</strong><br><br>The Completeness Review for CR-{ID} has identified items requiring revision.<br><br><strong>Feedback Items:</strong><br>{List of specific feedback items per section}<br><br><strong>Action Required:</strong> Address all feedback items and resubmit for review.<br><strong>SLA:</strong> 2 business days for rework"
+  },
+  completeness_pass: {
+    title: "E-11: Completeness Review — Approved (NEW)",
+    to: "All Stakeholders",
+    subject: "✅ CR-{ID} — Completeness Review Passed",
+    body: "<strong>Completeness Review Approved — CCB Meeting Scheduling</strong><br><br>CR-{ID} has passed the Completeness Review. All 7 sections verified as complete and accurate.<br><br><strong>Approved By:</strong> Product Owner + CCB Lead<br><strong>Next Step:</strong> CR will be scheduled for the next CCB meeting where approvals will be collected<br><strong>Quality Gate G2.5:</strong> PASSED"
+  },
+  completeness_email: {
+    title: "E-09 to E-12: Completeness Review Notifications (NEW)",
+    to: "Various (per notification type)",
+    subject: "CR-{ID} — Completeness Review Update",
+    body: "<strong>Four notifications in this group:</strong><br><br>• <strong>E-09:</strong> Review Initiated → PO, CCB Lead, Change Owner, Tech Lead<br>• <strong>E-10:</strong> Rework Required → Tech Lead, Change Owner<br>• <strong>E-11:</strong> Review Approved → All Stakeholders<br>• <strong>E-12:</strong> Review Summary Report → CCB Facilitator, Archive"
+  },
+  approval_it_security: {
+    title: "IT Security Approval Request",
+    to: "IT Security Team Lead",
+    subject: "CR-{ID} — IT Security Approval Required",
+    body: "Please review CR-{ID} for security implications.<br><br><strong>Pre-verified:</strong> Sections 1-7 have passed Completeness Review ✅<br><strong>Focus Areas:</strong> Security vulnerabilities, access control, data protection<br><strong>QA Evidence:</strong> Available in Section 7 (pre-completed)<br><strong>SLA:</strong> 3 business days"
+  },
+  approval_infrastructure: {
+    title: "Infrastructure Approval Request",
+    to: "Infrastructure Team Lead",
+    subject: "CR-{ID} — Infrastructure Approval Required",
+    body: "Please review CR-{ID} for infrastructure readiness.<br><br><strong>Pre-verified:</strong> Sections 1-7 have passed Completeness Review ✅<br><strong>Focus Areas:</strong> Capacity, network, environment, deployment requirements<br><strong>SLA:</strong> 3 business days"
+  },
+  approval_business: {
+    title: "Business Owner Approval Request",
+    to: "Business Owner / Sponsor",
+    subject: "CR-{ID} — Business Approval Required",
+    body: "Please review CR-{ID} for business impact and alignment.<br><br><strong>Pre-verified:</strong> Sections 1-7 have passed Completeness Review ✅<br><strong>Focus Areas:</strong> Business justification, cost-benefit, stakeholder impact<br><strong>SLA:</strong> 3 business days"
+  },
+  approval_compliance: {
+    title: "Compliance/Regulatory Approval Request",
+    to: "Compliance Officer",
+    subject: "CR-{ID} — Compliance Approval Required",
+    body: "Please review CR-{ID} for regulatory compliance.<br><br><strong>Pre-verified:</strong> Sections 1-7 have passed Completeness Review ✅<br><strong>Focus Areas:</strong> Regulatory requirements, audit trail, documentation compliance<br><strong>SLA:</strong> 3 business days"
+  },
+  approval_status: {
+    title: "E-13 to E-20: Approval Workflow Notifications",
+    to: "Various (per approval group)",
+    subject: "CR-{ID} — Approval Status Update",
+    body: "<strong>Eight notifications in this group:</strong><br><br>• <strong>E-13–E-16:</strong> Approval requests sent to each group (Security, Infrastructure, Business, Compliance)<br>• <strong>E-17:</strong> SLA reminders for pending approvals<br>• <strong>E-18:</strong> Individual approval confirmations<br>• <strong>E-19:</strong> Rejection/conditions notification<br>• <strong>E-20:</strong> All approvals complete — proceed to CCB scheduling"
+  },
+  ccb_schedule: {
+    title: "E-21: CCB Meeting Scheduled",
+    to: "All CCB Members, Change Owner, Technical Lead",
+    subject: "📅 CR-{ID} — CCB Meeting Scheduled for {Date}",
+    body: "A CCB meeting has been scheduled to review CR-{ID}.<br><br><strong>Date/Time:</strong> {DateTime}<br><strong>Location:</strong> {Room/Virtual Link}<br><strong>Agenda:</strong> Review and vote on CR-{ID}: {Title}<br><strong>Pre-reading:</strong> Complete CR package (Sec 1-7 + all approvals) attached"
+  },
+  ccb_package: {
+    title: "E-22: CR Package Distributed",
+    to: "All CCB Voting Members",
+    subject: "📦 CR-{ID} — Complete CR Package for Review",
+    body: "The complete change request package for CR-{ID} is attached for your review before the CCB meeting.<br><br><strong>Package Contents:</strong><br>• Sections 1-7 (all pre-verified via Completeness Review)<br>• Note: Approvals will be collected during the CCB meeting<br>• Risk assessment and mitigation plan<br>• QA test results and evidence"
+  },
+  ccb_reminder: {
+    title: "E-23: CCB Meeting Reminder",
+    to: "All CCB Members",
+    subject: "⏰ Reminder: CCB Meeting Tomorrow — CR-{ID}",
+    body: "This is a 24-hour reminder for the CCB meeting to review CR-{ID}.<br><br><strong>Meeting:</strong> {DateTime}<br><strong>Quorum Required:</strong> Minimum {N} voting members<br><strong>Please review:</strong> CR package distributed via E-22"
+  },
+  ccb_approved: {
+    title: "E-24: CCB Decision — Approved",
+    to: "All Stakeholders",
+    subject: "✅ CR-{ID} — APPROVED by Change Control Board",
+    body: "The Change Control Board has <strong>APPROVED</strong> CR-{ID}: {Title}.<br><br><strong>All Approvals:</strong> Collected during CCB meeting ✅<br><strong>Decision:</strong> Approved<br><strong>Vote:</strong> {For}-{Against}-{Abstain}<br><strong>Conditions:</strong> None<br><strong>Next Step:</strong> Proceed to Implementation (Stage 5)"
+  },
+  ccb_conditional: {
+    title: "E-25: CCB Decision — Approved with Conditions",
+    to: "All Stakeholders",
+    subject: "⚡ CR-{ID} — Approved with Conditions",
+    body: "The CCB has <strong>approved CR-{ID} with conditions</strong>.<br><br><strong>Conditions:</strong><br>{List of conditions}<br><br><strong>Action Required:</strong> Meet all conditions before implementation<br><strong>Deadline:</strong> {Date}"
+  },
+  ccb_deferred: {
+    title: "E-26: CCB Decision — Deferred",
+    to: "All Stakeholders",
+    subject: "⏸️ CR-{ID} — Deferred by Change Control Board",
+    body: "The CCB has <strong>deferred</strong> CR-{ID}.<br><br><strong>Reason:</strong> {Reason}<br><strong>Action Required:</strong> {Required actions}<br><strong>Next Review:</strong> {Next CCB meeting date}"
+  },
+  ccb_rejected: {
+    title: "E-27: CCB Decision — Rejected",
+    to: "All Stakeholders",
+    subject: "❌ CR-{ID} — REJECTED by Change Control Board",
+    body: "The CCB has <strong>rejected</strong> CR-{ID}: {Title}.<br><br><strong>Reason:</strong> {Reason}<br><strong>Resubmission:</strong> May resubmit with significant revisions after {cooling period}"
+  },
+  ccb_decision_email: {
+    title: "E-24 to E-28: CCB Decision Notifications",
+    to: "All Stakeholders",
+    subject: "CR-{ID} — CCB Decision",
+    body: "<strong>Five notifications in this group:</strong><br><br>• <strong>E-24:</strong> Approved<br>• <strong>E-25:</strong> Approved with Conditions<br>• <strong>E-26:</strong> Deferred<br>• <strong>E-27:</strong> Rejected<br>• <strong>E-28:</strong> Decision summary distributed to all stakeholders + archived"
+  },
+  impl_start: {
+    title: "E-29: Implementation Started",
+    to: "All Stakeholders",
+    subject: "🚀 CR-{ID} — Implementation Started",
+    body: "Implementation of CR-{ID} has begun.<br><br><strong>Start Time:</strong> {DateTime}<br><strong>Expected Duration:</strong> {Duration per Section 5 schedule}<br><strong>Rollback Plan:</strong> Active (per Section 6)<br><strong>Technical Lead:</strong> {Name}"
+  },
+  impl_progress: {
+    title: "E-30 to E-32: Implementation Progress",
+    to: "Change Owner, CCB Facilitator",
+    subject: "CR-{ID} — Implementation Progress Update",
+    body: "<strong>Progress notifications:</strong><br><br>• <strong>E-30:</strong> 25% milestone reached<br>• <strong>E-31:</strong> 50% milestone reached<br>• <strong>E-32:</strong> 75% milestone reached<br><br>Each includes: current status, any issues encountered, projected completion time."
+  },
+  impl_complete: {
+    title: "E-33: Implementation Complete",
+    to: "All Stakeholders",
+    subject: "🏁 CR-{ID} — Implementation Successfully Completed",
+    body: "Implementation of CR-{ID} has been <strong>successfully completed</strong>.<br><br><strong>Completion Time:</strong> {DateTime}<br><strong>Status:</strong> All changes deployed<br><strong>Rollback:</strong> Standing down (monitoring period active)<br><strong>Next Step:</strong> Post-Implementation Review (Section 8) due in 14 days"
+  },
+  pir_reminder: {
+    title: "E-34: PIR Reminder",
+    to: "Change Owner",
+    subject: "📋 CR-{ID} — Post-Implementation Review Due",
+    body: "Please complete <strong>Section 8: PIR Plan</strong> for CR-{ID}.<br><br><strong>Due Date:</strong> {Date+14 from implementation}<br><strong>Required:</strong> Outcomes, lessons learned, success metrics, stakeholder feedback"
+  },
+  pir_email: {
+    title: "E-34 to E-37: PIR Notifications",
+    to: "Various",
+    subject: "CR-{ID} — PIR Update",
+    body: "<strong>Four notifications:</strong><br><br>• <strong>E-34:</strong> PIR reminder to Change Owner<br>• <strong>E-35:</strong> PIR submitted confirmation<br>• <strong>E-36:</strong> PIR review by CCB Facilitator<br>• <strong>E-37:</strong> PIR accepted — proceed to closure"
+  },
+  closure_final: {
+    title: "Section 9 Finalization",
+    to: "System/Automated",
+    subject: "CR-{ID} — Section 9 Finalized",
+    body: "System has collected all signatures and finalized <strong>Section 9: Approvals & Signatures</strong>.<br><br><strong>Signatures Collected:</strong> Change Owner, Technical Lead, all Approval Groups, CCB Chair, Product Owner<br><strong>Record Status:</strong> Sealed and archived<br><strong>Audit Trail:</strong> Complete"
+  },
+  closure_email: {
+    title: "E-38 to E-40: Closure Notifications",
+    to: "All Stakeholders",
+    subject: "CR-{ID} — Change Request Closed",
+    body: "<strong>Three notifications:</strong><br><br>• <strong>E-38:</strong> CR archived — permanent record created<br>• <strong>E-39:</strong> Final summary report distributed<br>• <strong>E-40:</strong> Stakeholder closure notice — CR lifecycle complete"
+  },
+  ccb_approvals_collected: {
+    title: "In-Meeting Approvals",
+    to: "All Approval Groups present at CCB",
+    subject: "CR-{ID} — Approvals Collected During CCB Meeting",
+    body: "<strong>In-Meeting Approval Collection</strong><br><br>All required approval groups provide their sign-off during the CCB meeting session.<br><br><strong>Approval Groups:</strong><br>• IT Security<br>• Infrastructure<br>• Business Owner<br>• Compliance/Regulatory<br>• CCB Facilitator<br><br><strong>Process:</strong> Each group reviews the pre-verified CR package and provides their approval during the meeting. This replaces the previous separate approval collection stage."
+  },
+  escalation_sla: {
+    title: "E-41: SLA Breach Escalation",
+    to: "CCB Chair, Direct Manager",
+    subject: "⏰ ESCALATION: CR-{ID} — SLA Breach Detected",
+    body: "<strong>SLA Breach Alert</strong><br><br>CR-{ID} has exceeded its SLA at <strong>{Stage Name}</strong>.<br><br><strong>SLA Target:</strong> {Target}<br><strong>Actual:</strong> {Actual}<br><strong>Overdue By:</strong> {Duration}<br><strong>Action Required:</strong> Immediate intervention by escalation contact"
+  },
+  escalation_deadlock: {
+    title: "E-42: Approval Deadlock Escalation",
+    to: "CCB Chair",
+    subject: "🔀 ESCALATION: CR-{ID} — Approval Deadlock",
+    body: "<strong>Approval Deadlock</strong><br><br>CR-{ID} has conflicting approval decisions that require CCB Chair intervention.<br><br><strong>Conflicting Groups:</strong> {Groups}<br><strong>Issue:</strong> {Description}<br><strong>Required:</strong> CCB Chair resolution within 24 hours"
+  },
+  escalation_emergency: {
+    title: "E-43: Emergency Change Override",
+    to: "All CCB Members, CIO",
+    subject: "🚨 EMERGENCY: CR-{ID} — Fast-Track Override Invoked",
+    body: "<strong>Emergency Change Override</strong><br><br>An emergency fast-track has been invoked for CR-{ID}.<br><br><strong>Authorized By:</strong> {Name, Role}<br><strong>Justification:</strong> {Critical business reason}<br><strong>Condition:</strong> Full post-facto CCB review required within 5 business days"
+  }
+};
+
+function showEmail(key) {
+  const tmpl = emailTemplates[key];
+  if (!tmpl) return;
+  document.getElementById('modalTitle').textContent = tmpl.title;
+  document.getElementById('modalBody').innerHTML =
+    '<div class="email-meta">' +
+    '<div><strong>To:</strong> ' + tmpl.to + '</div>' +
+    '<div><strong>Subject:</strong> ' + tmpl.subject + '</div>' +
+    '</div>' +
+    '<div>' + tmpl.body + '</div>';
+  document.getElementById('emailModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('emailModal').classList.remove('active');
+}
+
+function showHelp() {
+  document.getElementById('helpModal').classList.add('active');
+}
+
+function closeHelp() {
+  document.getElementById('helpModal').classList.remove('active');
+}
+
+// Close modals on overlay click
+document.getElementById('emailModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.getElementById('helpModal').addEventListener('click', function(e) {
+  if (e.target === this) closeHelp();
+});
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closeModal(); closeHelp(); }
+});
+</script>
+
+</body>
+</html>

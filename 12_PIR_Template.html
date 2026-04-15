@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post-Implementation Review (PIR) - Moss Energy</title>
@@ -18,42 +16,12 @@
             line-height: 1.6;
             color: #333;
             background-color: #f5f5f5;
-            padding: 0;
-        }
-
-        /* Top Bar */
-        .top-bar {
-            background: linear-gradient(135deg, #003366 0%, #004d99 100%);
-            color: white;
-            padding: 20px 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .top-bar-content {
-            max-width: 1600px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .top-bar .logo-section h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: white;
-            border: none;
-        }
-        .top-bar .logo-section p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        .top-bar .header-info {
-            text-align: right;
-            font-size: 13px;
+            padding: 20px;
         }
         
         .container {
             max-width: 1000px;
-            margin: 20px auto;
+            margin: 0 auto;
             background-color: white;
             padding: 40px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -263,367 +231,27 @@
                 display: none;
             }
         }
-    
-/* ══════ CCB Global Navigation Sidebar ══════ */
-#ccb-nav-toggle {
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  z-index: 10001;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  border: none;
-  background: #003366;
-  color: #fff;
-  font-size: 22px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 3px 12px rgba(0,51,102,.35);
-  transition: background .2s, transform .2s;
-  line-height: 1;
-}
-#ccb-nav-toggle:hover { background: #004080; transform: scale(1.08); }
-#ccb-nav-toggle.open { background: #c62828; }
-
-#ccb-nav-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 9999;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .3s, visibility .3s;
-}
-#ccb-nav-overlay.open { opacity: 1; visibility: visible; }
-
-#ccb-nav-sidebar {
-  position: fixed;
-  top: 0;
-  left: -320px;
-  width: 300px;
-  height: 100vh;
-  background: #fff;
-  z-index: 10000;
-  box-shadow: 4px 0 24px rgba(0,0,0,.15);
-  transition: left .3s cubic-bezier(.4,0,.2,1);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-#ccb-nav-sidebar.open { left: 0; }
-
-.ccb-nav-brand {
-  background: linear-gradient(135deg, #003366 0%, #004d99 100%);
-  color: #fff;
-  padding: 28px 24px 20px;
-  flex-shrink: 0;
-}
-.ccb-nav-brand h3 {
-  font-size: 17px;
-  font-weight: 700;
-  margin: 0 0 4px;
-  letter-spacing: .3px;
-}
-.ccb-nav-brand p {
-  font-size: 12px;
-  opacity: .8;
-  margin: 0;
-  font-weight: 400;
-}
-
-.ccb-nav-links {
-  list-style: none;
-  margin: 0;
-  padding: 12px 0;
-  flex: 1;
-}
-.ccb-nav-links li { margin: 0; padding: 0; }
-.ccb-nav-links a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px 24px;
-  text-decoration: none;
-  color: #333;
-  font-size: 14px;
-  font-weight: 500;
-  border-left: 3px solid transparent;
-  transition: all .2s;
-}
-.ccb-nav-links a:hover {
-  background: #f0f4f8;
-  color: #003366;
-  border-left-color: #004d99;
-}
-.ccb-nav-links a.active {
-  background: #e6f0fa;
-  color: #003366;
-  font-weight: 700;
-  border-left-color: #003366;
-}
-.ccb-nav-links .nav-icon {
-  font-size: 18px;
-  width: 24px;
-  text-align: center;
-  flex-shrink: 0;
-}
-.ccb-nav-links .nav-label {
-  line-height: 1.3;
-}
-
-.ccb-nav-footer {
-  padding: 16px 24px;
-  border-top: 1px solid #e9ecef;
-  font-size: 11px;
-  color: #888;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-
-/* Mobile spacer to prevent nav overlap */
-@media (max-width: 768px) {
-  .ccb-mobile-spacer { height: 56px !important; display: block; }
-}
-@media (min-width: 769px) {
-  .ccb-mobile-spacer { display: none; }
-}
-
-/* ══════ Enhanced Mobile Responsiveness ══════ */
-
-/* -- Global mobile fixes -- */
-@media (max-width: 768px) {
-  html { -webkit-text-size-adjust: 100%; }
-  body { overflow-x: hidden; }
-
-  /* Ensure hamburger menu doesn't overlap content */
-  body > .container,
-  body > .wrapper,
-  body > main,
-  body > div:not(#ccb-nav-overlay):not(#ccb-nav-sidebar) {
-    padding-top: 60px !important;
-  }
-
-  /* Make all tables horizontally scrollable */
-  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; max-width: 100%; }
-  table thead, table tbody, table tr { display: table; width: 100%; table-layout: auto; }
-  
-  /* Improve touch targets - minimum 44px */
-  button, input[type="button"], input[type="submit"], input[type="reset"],
-  .btn, a.btn, [role="button"] {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  
-  input, select, textarea {
-    font-size: 16px !important; /* Prevents iOS zoom on focus */
-    min-height: 44px;
-  }
-
-  /* Prevent horizontal overflow */
-  img, svg, video, canvas {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  pre, code {
-    overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-}
-
-/* -- Small phone screens -- */
-@media (max-width: 480px) {
-  /* Nav toggle improvements for small screens */
-  #ccb-nav-toggle {
-    top: 6px;
-    left: 6px;
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-    border-radius: 8px;
-  }
-  
-  #ccb-nav-sidebar {
-    width: 85vw;
-    max-width: 300px;
-    left: -90vw;
-  }
-  #ccb-nav-sidebar.open { left: 0; }
-  
-  .ccb-nav-links a {
-    padding: 14px 20px;
-    font-size: 15px;
-    min-height: 48px;
-  }
-  .ccb-nav-links .nav-icon {
-    font-size: 20px;
-  }
-  .ccb-nav-brand {
-    padding: 24px 20px 16px;
-  }
-}
-
-/* -- Change Request Form specific -- */
-@media (max-width: 768px) {
-  .container { margin: 0 !important; border-radius: 0 !important; }
-  .content { padding: 15px !important; }
-  .header { flex-direction: column; text-align: center; padding: 20px 15px !important; }
-  .header h1 { font-size: 16pt !important; }
-  .top-bar { padding: 15px 20px !important; }
-  .top-bar-content { flex-direction: column; text-align: center; gap: 10px; }
-  .top-bar .header-info { text-align: center; }
-  .top-bar .logo-section h1 { font-size: 18px !important; }
-  .form-row { flex-direction: column; }
-  .form-group, .form-group.half, .form-group.third {
-    flex: 100% !important;
-    min-width: 100% !important;
-  }
-  .signature-row { flex-direction: column; gap: 10px; }
-  .footer { flex-direction: column; gap: 8px; text-align: center; padding: 15px !important; }
-  .checkbox-group { flex-direction: column; gap: 10px; }
-  .checkbox-item { padding: 8px 0; }
-  .category-box { padding: 14px; }
-}
-
-/* -- Change Request Register specific -- */
-@media (max-width: 768px) {
-  .register-table-wrapper,
-  .table-container,
-  .table-responsive,
-  div:has(> table) {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -15px;
-    padding: 0 15px;
-  }
-  .controls-row { flex-direction: column; gap: 10px; }
-  .search-box, .filter-group { width: 100% !important; }
-  .action-buttons { 
-    width: 100%; 
-    justify-content: center; 
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .action-buttons button, .action-buttons .btn {
-    flex: 1;
-    min-width: 120px;
-  }
-}
-
-/* -- PIR Template specific -- */
-@media (max-width: 768px) {
-  .pir-section, .review-section { padding: 15px !important; }
-  .pir-header, .review-header { flex-direction: column; text-align: center; }
-  .score-grid, .rating-grid { 
-    grid-template-columns: 1fr !important; 
-  }
-  .metric-card { padding: 12px !important; }
-}
-
-/* -- Flowchart pages specific -- */
-@media (max-width: 768px) {
-  .flowchart-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 12px 8px !important;
-  }
-  .wf-stage { margin-bottom: 16px; }
-  .wf-stage-header { flex-direction: column; text-align: center; padding: 12px !important; }
-  .wf-stage-body { padding: 12px !important; }
-  .wf-gate-grid, .wf-activities { 
-    grid-template-columns: 1fr !important; 
-  }
-  
-  /* Swimlane: allow horizontal scroll on the wide chart */
-  .flowchart { min-width: 900px; }
-  
-  /* Modal improvements for mobile */
-  .modal, .modal-content {
-    width: 95vw !important;
-    max-width: 95vw !important;
-    margin: 10px auto !important;
-    border-radius: 10px !important;
-  }
-  .modal-overlay .modal,
-  div[class*="modal"] {
-    max-height: 90vh !important;
-  }
-}
-
-/* -- Index/Home page specific -- */
-@media (max-width: 768px) {
-  .hero { padding: 32px 16px !important; }
-  .hero h2 { font-size: 1.3rem !important; }
-  .hero-stats { 
-    flex-direction: column; 
-    gap: 16px; 
-    align-items: center; 
-  }
-  .hero-stat { min-width: auto; }
-  .card-grid { 
-    grid-template-columns: 1fr !important; 
-    gap: 16px !important;
-    padding: 0 4px;
-  }
-  .card { padding: 20px 16px !important; }
-  .card h4 { font-size: 1rem; }
-}
-
-@media (max-width: 480px) {
-  .hero h2 { font-size: 1.1rem !important; }
-  .hero p { font-size: 0.85rem !important; }
-  .section-heading h3 { font-size: 1.15rem !important; }
-  header .header-inner { flex-direction: column; text-align: center; padding: 16px !important; }
-  header .header-text h1 { font-size: 1.1rem !important; }
-}
-
-/* ══════ End Enhanced Mobile Responsiveness ══════ */
-
-</style>
+    </style>
 </head>
 <body>
-
-<!-- ══════ CCB Global Navigation ══════ -->
-<button id="ccb-nav-toggle" aria-label="Open navigation menu" onclick="document.getElementById('ccb-nav-sidebar').classList.toggle('open');document.getElementById('ccb-nav-overlay').classList.toggle('open');this.classList.toggle('open');this.innerHTML=this.classList.contains('open')?'✕':'☰';">☰</button>
-<div id="ccb-nav-overlay" onclick="document.getElementById('ccb-nav-sidebar').classList.remove('open');document.getElementById('ccb-nav-overlay').classList.remove('open');document.getElementById('ccb-nav-toggle').classList.remove('open');document.getElementById('ccb-nav-toggle').innerHTML='☰';"></div>
-<nav id="ccb-nav-sidebar" role="navigation" aria-label="Site navigation">
-<div class="ccb-nav-brand">
-  <h3>Moss Energy</h3>
-  <p>Change Control Board Portal</p>
+<!-- Moss Docs Nav -->
+<div id="moss-site-nav" style="background:#003366;padding:0 24px;display:flex;align-items:center;height:44px;font-family:Segoe UI,system-ui,sans-serif;position:sticky;top:0;z-index:9999;box-shadow:0 2px 6px rgba(0,0,0,0.15);">
+  <a href="../index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#fff;margin-right:28px;">
+    <div style="width:28px;height:28px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#003366;font-size:11px;">M</div>
+    <span style="font-size:13px;font-weight:700;letter-spacing:0.4px;">MOSS ENERGY</span>
+  </a>
+  <nav style="display:flex;gap:2px;">
+    <a href="../index.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">← Home</a>
+    <a href="01_Change_Request_Form_V3.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Form</a>
+    <a href="07_Change_Request_Register.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Register</a>
+    <a href="08_CCB_Metrics_Dashboard.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Dashboard</a>
+    <a href="12_PIR_Template.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">PIR Template</a>
+    <a href="15_Change_Request_Workflow_Flowchart.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Workflow</a>
+    <a href="17_Section_Responsibility_Swimlane_Flowchart.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Swimlane</a>
+    <a href="CCB_Stakeholder_Responsibility_Mapping.html" style="color:rgba(255,255,255,0.8);text-decoration:none;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;">Stakeholder Map</a>
+  </nav>
 </div>
-<ul class="ccb-nav-links">
-  <li><a href="index.html"><span class="nav-icon">🏠</span><span class="nav-label">CCB Home</span></a></li>
-  <li><a href="01_Change_Request_Form_V3.html"><span class="nav-icon">📝</span><span class="nav-label">Change Request Form</span></a></li>
-  <li><a href="Intake_Form_Workflow.pdf" target="_blank"><span class="nav-icon">📄</span><span class="nav-label">Intake Form Workflow</span></a></li>
-  <li><a href="07_Change_Request_Register.html"><span class="nav-icon">📋</span><span class="nav-label">Change Request Register</span></a></li>
-  <li><a href="08_CCB_Metrics_Dashboard.html"><span class="nav-icon">📈</span><span class="nav-label">Metrics Dashboard</span></a></li>
-  <li><a href="12_PIR_Template.html" class="active"><span class="nav-icon">🔍</span><span class="nav-label">Post-Implementation Review</span></a></li>
-  <li><a href="CCB_Deliverables_15_Change_Request_Workflow_Flowchart.html"><span class="nav-icon">📊</span><span class="nav-label">Workflow Flowchart</span></a></li>
-  <li><a href="17_Section_Responsibility_Swimlane_Flowchart.html"><span class="nav-icon">🏊</span><span class="nav-label">Swimlane Flowchart</span></a></li>
-</ul>
-<div class="ccb-nav-footer">CCB Deliverables &bull; v2.1 &bull; 2026</div>
-</nav>
-<!-- ══════ End CCB Navigation ══════ -->
-<div class="ccb-mobile-spacer" style="height:0px"></div>
-
-    <!-- Top Bar -->
-    <header class="top-bar">
-        <div class="top-bar-content">
-            <div class="logo-section">
-                <h1>⚡ Moss Energy</h1>
-                <p>Change Control Board - Post-Implementation Review</p>
-            </div>
-            <div class="header-info">
-                <div>Version 1.0 | March 2026</div>
-                <div>CCB Document: 12</div>
-            </div>
-        </div>
-    </header>
+<!-- End Moss Docs Nav -->
 
     <div class="container">
         <!-- Header -->
